@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Anthony Ross"]
   spec.email         = ["anthony.s.ross@gmail.com"]
 
-  spec.summary       = %q{A Sidekiq middlware that implements the circuit breaker pattern}
+  spec.summary       = %q{A Sidekiq middleware that implements the circuit breaker pattern}
   spec.description   = %q{This gem allows for users of Sidekiq in a distributed system to use a common circuit breaker that can be used across any number of Sidekiq servers"}
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"

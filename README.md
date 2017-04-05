@@ -1,8 +1,7 @@
 # SwitchGearSidekiq::Middleware
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/switch_gear_sidekiq/middleware`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem is a small [Sidekiq](https://www.github.com/mperham/sidekiq) middlware that uses the [SwitchGear](https://www.github.com/allcentury/switch_gear) to allow for a circuit breaker to be used across sidekiq jobs.  This is done using the `Redis` client found in `SwitchGear`.
 
-TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
@@ -22,7 +21,31 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You need to add the middlware to your sidekiq initializer like so:
+
+```ruby
+# use your own redis connecton or checkout one from the sidekiq pool
+redis = Redis.new || Sidekiq::Client.new.redis_pool.checkout
+
+breaker = SwitchGearSidekiq::Breaker.new do |cb|
+  cb.client = redis
+  cb.worker = YourWorkerClass
+  cb.failure_limit = 2
+  cb.reset_timeout = 5
+  cb.logger = Sidekiq.logger
+end
+
+Sidekiq.configure_server do |config|
+  config.server_middleware do |chain|
+    chain.add SwitchGearSidekiq::Middleware, breakers: [breaker]
+  end
+end
+```
+
+You can pass an array of breakers to the middleware.  The middlware looks up the breaker by the worker class you pass in and needs to match the worker Sidekiq would initialize when it's popped off the queue.
+
+There is a helper class called `SwitchGearSidekiq::Breaker` which is a really thin wrapper around [SwitchGear::CircuitBreaker::Redis](https://www.github.com/allcentury/switch_gear).  Please see that gems documentation on what can be configured.
+
 
 ## Development
 
@@ -32,7 +55,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/switch_gear_sidekiq-middleware. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/allcentury/switch_gear_sidekiq-middleware. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
