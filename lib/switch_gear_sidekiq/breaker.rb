@@ -26,8 +26,8 @@ module SwitchGearSidekiq
     private
 
     def run_validations
-      msg = "Missing worker"
-      fail msg if !worker
+      msg = "please provider a worker"
+      raise(ArgumentError, msg) if !worker
     end
   end
 end

@@ -1,14 +1,10 @@
 require "spec_helper"
 
-class SomeWorker
-  include Sidekiq::Worker
-end
-
 describe SwitchGearSidekiq::Middleware do
   let(:redis) { double('redis') }
-  let(:worker) { SomeWorker.new }
+  let(:worker) { Helpers::SomeWorker.new }
   let(:job) do
-      { 'class' => 'SomeWorker', 'args' => [1,2,'foo'] }
+      { 'class' => 'Helpers::SomeWorker', 'args' => [1,2,'foo'] }
   end
   let(:middleware) do
     described_class.new(breakers: [breaker])
@@ -16,7 +12,7 @@ describe SwitchGearSidekiq::Middleware do
   let(:breaker) do
     SwitchGearSidekiq::Breaker.new do |b|
       b.client = redis
-      b.worker = SomeWorker
+      b.worker = Helpers::SomeWorker
       b.failure_limit = 2
       b.reset_timeout = 5
       b.logger = Logger.new(STDOUT)
