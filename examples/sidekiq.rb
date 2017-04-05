@@ -1,8 +1,6 @@
-# require 'switch_gear_sidekiq-middlware'
 require 'sidekiq'
 require 'switch_gear'
 require 'redis'
-
 
 class HardWorker
   include Sidekiq::Worker
@@ -34,3 +32,6 @@ Sidekiq.configure_server do |config|
 end
 
 ["joe", "jane", "mary", "steve", "harry", "jeff", "sally", "tracy", "anna"].each { |handle| HardWorker.perform_async(handle) }
+
+# Run this file on the commandline via:
+# sidekiq -c 2 -r ./examples/sidekiq.rb
