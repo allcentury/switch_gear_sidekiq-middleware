@@ -7,12 +7,14 @@ module SwitchGearSidekiq
     attr_reader :breakers
 
     def initialize(breakers:)
-      @breakers = Set.new(breakers)
+      @breakers = breakers.each_with_object({}) do |breaker, hash|
+        hash[breaker.worker] = breaker
+      end
       run_validations
     end
 
     def call(worker, msg, queue, &block)
-      breaker = breakers.find { |b| worker.is_a?(b.worker) }
+      breaker = breakers[worker.class]
       Sidekiq.logger.debug "Breaker being used: #{breaker}"
 
       breaker.call(block)
@@ -29,8 +31,8 @@ module SwitchGearSidekiq
     private
 
     def run_validations
-      msg = "You must pass in an instnace of a SwitchGear::CircuitBreaker"
-      fail msg if breakers.any? { |breaker| !breaker.is_a? SwitchGear::CircuitBreaker }
+      msg = "You must pass in an instance of a SwitchGear::CircuitBreaker"
+      fail msg if breakers.any? { |klass, breaker| !breaker.is_a? SwitchGear::CircuitBreaker }
     end
   end
 end
