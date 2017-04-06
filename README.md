@@ -42,7 +42,7 @@ Sidekiq.configure_server do |config|
 end
 ```
 
-You can pass an array of breakers to the middleware.  The middlware looks up the breaker by the worker class you pass in and needs to match the worker Sidekiq would initialize when it's popped off the queue.
+You can pass an array of breakers to the middleware.  The middleware looks up the breaker by the worker class you pass in and needs to match the worker Sidekiq would initialize when it's popped off the queue.
 
 There is a helper class called `SwitchGearSidekiq::Breaker` which is a really thin wrapper around [SwitchGear::CircuitBreaker::Redis](https://www.github.com/allcentury/switch_gear).  Please see that gems documentation on what can be configured.
 
