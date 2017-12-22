@@ -52,5 +52,15 @@ describe SwitchGearSidekiq::Middleware do
         'running job...'
       end
     end
+
+    it "does nothing if a breaker isn't configured" do
+      expect(redis).to_not receive(:get)
+      expect(Sidekiq.logger).to receive(:debug).with(/No breaker found/)
+      middleware.call(OtherWorker, job, 'default') do
+        'running job...'
+      end
+    end
   end
+
+  class OtherWorker; end
 end

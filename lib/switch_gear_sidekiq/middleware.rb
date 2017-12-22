@@ -15,6 +15,13 @@ module SwitchGearSidekiq
 
     def call(worker, msg, queue, &block)
       breaker = breakers[worker.class]
+
+      if !breaker
+        Sidekiq.logger.debug "No breaker found for #{worker.class}"
+        yield
+        return
+      end
+
       Sidekiq.logger.debug "Breaker being used: #{breaker}"
 
       breaker.call(block)
