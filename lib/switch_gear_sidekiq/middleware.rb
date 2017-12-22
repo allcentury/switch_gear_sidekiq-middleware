@@ -2,7 +2,7 @@ require 'switch_gear_sidekiq/breaker'
 
 module SwitchGearSidekiq
   class Middleware
-    VERSION = "0.1.0"
+    VERSION = "0.1.1"
 
     attr_reader :breakers
 
@@ -15,6 +15,13 @@ module SwitchGearSidekiq
 
     def call(worker, msg, queue, &block)
       breaker = breakers[worker.class]
+
+      if !breaker
+        Sidekiq.logger.debug "No breaker found for #{worker.class}"
+        yield
+        return
+      end
+
       Sidekiq.logger.debug "Breaker being used: #{breaker}"
 
       breaker.call(block)

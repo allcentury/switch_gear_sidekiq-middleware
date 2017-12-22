@@ -10,3 +10,4 @@
 coverage/
 .ruby-version
 *.swp
+tags
