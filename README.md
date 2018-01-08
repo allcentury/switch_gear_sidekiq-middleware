@@ -1,6 +1,6 @@
 # SwitchGearSidekiq::Middleware
 
-This gem is a small [Sidekiq](https://www.github.com/mperham/sidekiq) middlware that uses the [SwitchGear](https://www.github.com/allcentury/switch_gear) gem to allow for a circuit breaker to be used across sidekiq jobs.  This is done using the `Redis` client found in `SwitchGear`.
+This gem is a small [Sidekiq](https://www.github.com/mperham/sidekiq) middlware that uses the [SwitchGear](https://www.github.com/allcentury/switch_gear) gem to allow for a circuit breaker to be used across sidekiq jobs.  This is done using the `Redis` adapter found in `SwitchGear`.
 
 
 ## Installation
